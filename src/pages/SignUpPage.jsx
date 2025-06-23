@@ -10,35 +10,43 @@ function SignUpPage() {
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+ const handleSubmit = (e) => {
+  e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match');
-      return;
+  if (password !== confirmPassword) {
+    setErrorMessage('Passwords do not match');
+    return;
+  }
+
+  axios.post('https://weatherhub-api.onrender.com/api/v1/auth/signup', {
+    email,
+    password,
+  })
+.then(response => {
+  console.log('Response from API:', response.data); // تحقق من البيانات الكاملة
+
+  if (response.data.data.token) {
+    const token = response.data.data.token;
+    console.log('Token:', token); // تحقق من قيمة التوكن
+    localStorage.setItem('token', token);  // تخزين التوكن
+    setSuccessMessage('Account created successfully');
+    setTimeout(() => {
+      navigate('/weather'); 
+    }, 2000);
+  } else {
+    setErrorMessage('Failed to receive token from the backend');
+  }
+})
+  .catch(error => {
+    if (error.response) {
+      console.error('Error Response:', error.response.data);
+      setErrorMessage(`Failed to create account: ${error.response.data.message || 'Check your data'}`);
+    } else {
+      console.error('Error:', error.message);
+      setErrorMessage('Failed to create account: Network or server issue');
     }
-
-    axios.post('https://weatherhub-api.onrender.com/api/v1/auth/signup', {
-      email,
-      password,
-    })
-    .then(response => {
-      if (response.data.token) {
-        const token = response.data.token;
-        localStorage.setItem('token', token);  // Store token in localStorage
-        setSuccessMessage('Account created successfully');
-        setTimeout(() => {
-          navigate('/weather');  // Redirect to Weather Page  
-        }, 2000);
-      } else {
-        setErrorMessage('Failed to receive token from the backend');
-      }
-    })
-    .catch(error => {
-      setErrorMessage('Failed to create account: Check your data');
-      console.error('Sign Up error:', error);
-    });
-  };
+  });
+};
 
   return (
     <div className="max-w-md mx-auto p-4">

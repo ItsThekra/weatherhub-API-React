@@ -1,40 +1,52 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router'; 
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
-function LoginPage() {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();  
+  const nav = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSignIn = (e) => {
+    e.preventDefault(); 
 
-    axios.post('https://weatherhub-api.onrender.com/api/v1/auth/signin', {
-      email,
-      password,
+    if (!email || !password) {
+      setErrorMessage('Please enter both email and password');
+      return;
+    }
+
+    fetch('https://weatherhub-api.onrender.com/api/v1/auth/signin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
     })
-    .then(response => {
-      if (response.data.token) {
-        const token = response.data.token;
-        localStorage.setItem('token', token);  // Store token in localStorage
-        alert('Login successful');
-        navigate('/weather');  // Redirect to Weather Page
-      } else {
-        setErrorMessage('Login failed: Token not received');
-      }
-    })
-    .catch(error => {
-      setErrorMessage('Login failed: Check your credentials');
-      console.error('Login error:', error);
-    });
+      .then((res) => res.json()) 
+      .then((data) => {
+        console.log(data); 
+
+        if (data && data.token) {
+          // تخزين التوكن في localStorage
+          console.log("token:",data.token);
+          
+          localStorage.setItem('token', data.token);
+          alert('Login Successful');
+          nav('/weather'); 
+        } else {
+          setErrorMessage('Login failed: Token not received');
+        }
+      })
+      .catch((error) => {
+        setErrorMessage('Login failed: Check your credentials');
+        console.error('Login error:', error);
+      });
   };
 
   return (
     <div className="max-w-md mx-auto p-4">
       <h1 className="text-2xl font-bold text-center mb-4">Login</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSignIn} className="space-y-4">
         <div>
           <input
             type="email"
@@ -61,10 +73,13 @@ function LoginPage() {
       </form>
       {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
       <p className="mt-4 text-center">
-        Don't have an account? <Link to="/signup" className="text-blue-500">Sign Up</Link>
+        Don't have an account? <a href="/signup" className="text-blue-500">Sign Up</a>
       </p>
     </div>
   );
 }
 
 export default LoginPage;
+
+
+
