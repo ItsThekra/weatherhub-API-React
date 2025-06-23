@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router'; // استخدم Link من react-router-dom للتنقل بين الصفحات
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const nav = useNavigate();
+  const nav = useNavigate(); // استخدم useNavigate للتنقل بين الصفحات
 
   const handleSignIn = (e) => {
     e.preventDefault(); 
@@ -24,15 +24,11 @@ const LoginPage = () => {
     })
       .then((res) => res.json()) 
       .then((data) => {
-        console.log(data); 
-
         if (data && data.token) {
           // تخزين التوكن في localStorage
-          console.log("token:",data.token);
-          
           localStorage.setItem('token', data.token);
           alert('Login Successful');
-          nav('/weather'); 
+          nav('/weather'); // بعد تسجيل الدخول بنجاح، توجيه المستخدم إلى صفحة الطقس
         } else {
           setErrorMessage('Login failed: Token not received');
         }
@@ -73,7 +69,7 @@ const LoginPage = () => {
       </form>
       {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
       <p className="mt-4 text-center">
-        Don't have an account? <a href="/signup" className="text-blue-500">Sign Up</a>
+        Don't have an account? <Link to="/signup" className="text-blue-500">Sign Up</Link>
       </p>
     </div>
   );
