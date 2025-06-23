@@ -13,13 +13,10 @@ function SignUpPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // تحقق من أن كلمات المرور متطابقة
     if (password !== confirmPassword) {
       setErrorMessage('Passwords do not match');
       return;
     }
-
-    // إرسال بيانات التسجيل إلى السيرفر
     axios.post('https://weatherhub-api.onrender.com/api/v1/auth/signup', {
       email,
       password,
@@ -27,20 +24,16 @@ function SignUpPage() {
     .then(response => {
       console.log('Response from API:', response.data);
 
-      // تحقق من وجود التوكن في الاستجابة
       if (response.data.data.token) {
         const token = response.data.data.token;
-        console.log('Token:', token); // تحقق من قيمة التوكن
+        console.log('Token:', token); 
 
-        // تخزين التوكن في localStorage
         localStorage.setItem('token', token);
 
-        // عرض رسالة نجاح
         setSuccessMessage('Account created successfully');
         
-        // التوجيه إلى صفحة الطقس بعد 2 ثانية
         setTimeout(() => {
-          navigate('/weather'); // التوجيه إلى صفحة الطقس
+          navigate('/weather'); 
         }, 2000);
       } else {
         setErrorMessage('Failed to receive token from the backend');
@@ -96,7 +89,6 @@ function SignUpPage() {
         </button>
       </form>
 
-      {/* عرض رسائل الخطأ أو النجاح */}
       {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
       {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
     </div>

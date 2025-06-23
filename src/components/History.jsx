@@ -9,7 +9,6 @@ const History = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      // إذا لم يكن هناك توكن، أعد توجيه المستخدم إلى صفحة تسجيل الدخول
       window.location.href = '/signin';
       return;
     }
@@ -22,7 +21,7 @@ const History = () => {
         },
       })
       .then((response) => {
-        setHistoryData(response.data.data); // تخزين البيانات المسترجعة
+        setHistoryData(response.data.data); 
       })
       .catch((error) => {
         setError('Failed to fetch history');

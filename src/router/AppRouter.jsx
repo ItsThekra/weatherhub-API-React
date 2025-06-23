@@ -7,15 +7,16 @@ import Footer from "../components/Footer";
 
 function Layout() {
   return (
-    <div>
-      <Navbar />  
-      <div className="min-h-screen">
+    <div className="flex flex-col min-h-screen">
+      <Navbar /> 
+      <div className="flex-grow">
         <Outlet />  
       </div>
-      <Footer />  
+      <Footer className="flex flex-col max-h-screen"/> 
     </div>
   );
 }
+
 
 const router = createBrowserRouter([
   {

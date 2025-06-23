@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Navbar from './Navbar';  // استيراد Navbar
-import Footer from './Footer';  // استيراد Footer
-import History from './History';  // استيراد History
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import History from '../components/History';
 
 function WeatherPage() {
   const [latitude, setLatitude] = useState('');
@@ -19,7 +19,7 @@ function WeatherPage() {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      window.location.href = '/signin'; // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول إذا لم يكن التوكن موجودًا
+      window.location.href = '/signin'; 
       return;
     }
 
@@ -44,28 +44,28 @@ function WeatherPage() {
 
   return (
     <div>
-      <Navbar />  {/* عرض Navbar */}
+      <Navbar />  
       
       <div className="max-w-md mx-auto p-4">
         <h2 className="text-2xl font-bold text-center mb-4">Weather Information</h2>
         <div>
-          <label>Latitude:</label>
+          <label className="block font-semibold">Latitude:</label>
           <input
             type="number"
             value={latitude}
             onChange={(e) => setLatitude(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-2 border border-gray-300 rounded-md mb-4"
             placeholder="Enter latitude"
           />
         </div>
 
         <div>
-          <label>Longitude:</label>
+          <label className="block font-semibold">Longitude:</label>
           <input
             type="number"
             value={longitude}
             onChange={(e) => setLongitude(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-2 border border-gray-300 rounded-md mb-4"
             placeholder="Enter longitude"
           />
         </div>
@@ -77,22 +77,35 @@ function WeatherPage() {
           Get Weather
         </button>
 
-        {loading && <p>Loading...</p>}
-        {error && <p className="text-red-500">{error}</p>}
+        {loading && <p className="text-center mt-4">Loading...</p>}
+        {error && <p className="text-red-500 text-center mt-4">{error}</p>}
 
         {weatherData && (
-          <div>
-            <p>Temperature: {weatherData.tempC}°C</p>
-            <p>Humidity: {weatherData.humidity}%</p>
-            <p>Description: {weatherData.description}</p>
-            <p>Coordinates: Latitude: {weatherData.coordinates.lat}, Longitude: {weatherData.coordinates.lon}</p>
+          <div className="mt-6">
+            <div className="bg-white shadow-md p-4 rounded-lg mb-4">
+              <h3 className="text-xl font-semibold mb-2">Weather Details</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <strong>Temperature:</strong> {weatherData.tempC}°C
+                </div>
+                <div>
+                  <strong>Humidity:</strong> {weatherData.humidity}%
+                </div>
+                <div>
+                  <strong>Description:</strong> {weatherData.description}
+                </div>
+                <div>
+                  <strong>Coordinates:</strong> Latitude: {weatherData.coordinates.lat}, Longitude: {weatherData.coordinates.lon}
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      <History />  {/* عرض سجل البحث */}
+      <History />  
 
-      <Footer />  {/* عرض Footer */}
+      <Footer /> 
     </div>
   );
 }

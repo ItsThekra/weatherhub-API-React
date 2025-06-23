@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router'; // استخدم Link من react-router-dom للتنقل بين الصفحات
+import { useNavigate, Link } from 'react-router'; 
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const nav = useNavigate(); // استخدم useNavigate للتنقل بين الصفحات
+  const nav = useNavigate(); 
 
   const handleSignIn = (e) => {
     e.preventDefault(); 
@@ -25,10 +25,9 @@ const LoginPage = () => {
       .then((res) => res.json()) 
       .then((data) => {
         if (data && data.token) {
-          // تخزين التوكن في localStorage
           localStorage.setItem('token', data.token);
           alert('Login Successful');
-          nav('/weather'); // بعد تسجيل الدخول بنجاح، توجيه المستخدم إلى صفحة الطقس
+          nav('/weather'); 
         } else {
           setErrorMessage('Login failed: Token not received');
         }
