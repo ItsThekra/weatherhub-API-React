@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
-import LoginPage from "../Page/LoginPage";  
-import SignUpPage from "../Page/SignUpPage"; 
-import WeatherPage from "../Page/WeatherPage";  
+import LoginPage from "../pages/LoginPage";  
+import SignUpPage from "../pages/SignUpPage"; 
+import WeatherPage from "../pages/WeatherPage";  
 import Navbar from "../components/Navbar";  
 import Footer from "../components/Footer";  
 
