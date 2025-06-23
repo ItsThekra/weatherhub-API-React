@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Navbar from './Navbar';  // استيراد Navbar
+import Footer from './Footer';  // استيراد Footer
+import History from './History';  // استيراد History
 
 function WeatherPage() {
   const [latitude, setLatitude] = useState('');
@@ -16,71 +19,80 @@ function WeatherPage() {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      window.location.href = '/';
+      window.location.href = '/signin'; // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول إذا لم يكن التوكن موجودًا
       return;
     }
 
     setLoading(true);
     setError(null);
 
-    axios.get(`https://weatherhub-api.onrender.com/api/v1/weather?lat=${latitude}&lon=${longitude}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      }
-    })
-    .then(response => {
-      setWeatherData(response.data.data);
-      setLoading(false);
-    })
-    .catch(error => {
-      setError('Error occurred while fetching weather data');
-      setLoading(false);
-    });
+    axios
+      .get(`https://weatherhub-api.onrender.com/api/v1/weather?lat=${latitude}&lon=${longitude}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setWeatherData(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError('Error occurred while fetching weather data');
+        setLoading(false);
+      });
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      <h2 className="text-2xl font-bold text-center mb-4">Weather Information</h2>
-      <div>
-        <label>Latitude:</label>
-        <input
-          type="number"
-          value={latitude}
-          onChange={(e) => setLatitude(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-md"
-          placeholder="Enter latitude"
-        />
-      </div>
-
-      <div>
-        <label>Longitude:</label>
-        <input
-          type="number"
-          value={longitude}
-          onChange={(e) => setLongitude(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-md"
-          placeholder="Enter longitude"
-        />
-      </div>
-
-      <button
-        onClick={handleGetWeather}
-        className="w-full bg-blue-500 text-white py-2 rounded-md mt-4"
-      >
-        Get Weather
-      </button>
-
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      {weatherData && (
+    <div>
+      <Navbar />  {/* عرض Navbar */}
+      
+      <div className="max-w-md mx-auto p-4">
+        <h2 className="text-2xl font-bold text-center mb-4">Weather Information</h2>
         <div>
-          <p>Temperature: {weatherData.tempC}°C</p>
-          <p>Humidity: {weatherData.humidity}%</p>
-          <p>Description: {weatherData.description}</p>
-          <p>Coordinates: Latitude: {weatherData.coordinates.lat}, Longitude: {weatherData.coordinates.lon}</p>
+          <label>Latitude:</label>
+          <input
+            type="number"
+            value={latitude}
+            onChange={(e) => setLatitude(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="Enter latitude"
+          />
         </div>
-      )}
+
+        <div>
+          <label>Longitude:</label>
+          <input
+            type="number"
+            value={longitude}
+            onChange={(e) => setLongitude(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="Enter longitude"
+          />
+        </div>
+
+        <button
+          onClick={handleGetWeather}
+          className="w-full bg-blue-500 text-white py-2 rounded-md mt-4"
+        >
+          Get Weather
+        </button>
+
+        {loading && <p>Loading...</p>}
+        {error && <p className="text-red-500">{error}</p>}
+
+        {weatherData && (
+          <div>
+            <p>Temperature: {weatherData.tempC}°C</p>
+            <p>Humidity: {weatherData.humidity}%</p>
+            <p>Description: {weatherData.description}</p>
+            <p>Coordinates: Latitude: {weatherData.coordinates.lat}, Longitude: {weatherData.coordinates.lon}</p>
+          </div>
+        )}
+      </div>
+
+      <History />  {/* عرض سجل البحث */}
+
+      <Footer />  {/* عرض Footer */}
     </div>
   );
 }

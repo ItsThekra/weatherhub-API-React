@@ -1,19 +1,37 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router'; 
-import LoginPage from '../pages/LoginPage';  
-import SignUpPage from '../pages/SignUpPage';  
-import WeatherPage from '../pages/WeatherPage';  
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
+import LoginPage from "../Page/LoginPage";  
+import SignUpPage from "../Page/SignUpPage"; 
+import WeatherPage from "../Page/WeatherPage";  
+import Navbar from "../components/Navbar";  
+import Footer from "../components/Footer";  
+
+function Layout() {
+  return (
+    <div>
+      <Navbar />  
+      <div className="min-h-screen">
+        <Outlet />  
+      </div>
+      <Footer />  
+    </div>
+  );
+}
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,  
+    children: [
+      { path: "/", element: <LoginPage /> },  
+      { path: "signup", element: <SignUpPage /> },  
+      { path: "weather", element: <WeatherPage /> },  
+    ],
+  },
+]);
 
 function AppRouter() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/signin" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/weather" element={<WeatherPage />} />
-        <Route path="/" element={<LoginPage />} />
-      </Routes>
-    </Router>
+    <RouterProvider router={router} />  
   );
 }
 
