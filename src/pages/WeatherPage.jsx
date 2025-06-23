@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import History from '../components/History';
+import History from '../components/History';  
 
 function WeatherPage() {
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [weatherData, setWeatherData] = useState(null);
+  const [historyData, setHistoryData] = useState([]);  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -42,9 +43,27 @@ function WeatherPage() {
       });
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios
+        .get('https://weatherhub-api.onrender.com/api/v1/history', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setHistoryData(response.data.data);  
+        })
+        .catch((error) => {
+          console.error('Error fetching history:', error);
+        });
+    }
+  }, []);  
+
   return (
     <div>
-      <Navbar />  
+      <Navbar /> 
       
       <div className="max-w-md mx-auto p-4">
         <h2 className="text-2xl font-bold text-center mb-4">Weather Information</h2>
@@ -101,9 +120,25 @@ function WeatherPage() {
             </div>
           </div>
         )}
-      </div>
 
-      <History />  
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-2">Weather History</h3>
+          {historyData.length > 0 ? (
+            <div className="space-y-4">
+              {historyData.map((item, index) => (
+                <div key={index} className="bg-white shadow-md p-4 rounded-lg">
+                  <p><strong>Temperature:</strong> {item.weather.tempC}°C</p>
+                  <p><strong>Description:</strong> {item.weather.description}</p>
+                  <p><strong>Location:</strong> Latitude: {item.lat}, Longitude: {item.lon}</p>
+                  <p><strong>Requested At:</strong> {new Date(item.requestedAt).toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No history found.</p>
+          )}
+        </div>
+      </div>
 
       <Footer /> 
     </div>
@@ -111,3 +146,4 @@ function WeatherPage() {
 }
 
 export default WeatherPage;
+
