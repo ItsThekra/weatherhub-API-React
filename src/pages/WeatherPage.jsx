@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import History from '../components/History';  
+import History from '../components/History';
 
 function WeatherPage() {
   const [latitude, setLatitude] = useState('');
@@ -35,11 +35,37 @@ function WeatherPage() {
       })
       .then((response) => {
         setWeatherData(response.data.data);
+        saveToHistory(response.data.data);
         setLoading(false);
       })
       .catch((error) => {
         setError('Error occurred while fetching weather data');
         setLoading(false);
+      });
+  };
+
+  
+  const saveToHistory = (weatherData) => {
+    const token = localStorage.getItem('token');
+    axios
+      .post(
+        'https://weatherhub-api.onrender.com/api/v1/history',
+        {
+          lat: latitude,
+          lon: longitude,
+          weather: weatherData,  
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setHistoryData((prevData) => [response.data.data, ...prevData]); 
+      })
+      .catch((error) => {
+        console.error('Error saving to history:', error);
       });
   };
 
@@ -63,7 +89,7 @@ function WeatherPage() {
 
   return (
     <div>
-      <Navbar /> 
+      <Navbar />  
       
       <div className="max-w-md mx-auto p-4">
         <h2 className="text-2xl font-bold text-center mb-4">Weather Information</h2>
@@ -140,10 +166,11 @@ function WeatherPage() {
         </div>
       </div>
 
-      <Footer /> 
+      <Footer />  
     </div>
   );
 }
 
 export default WeatherPage;
+
 
